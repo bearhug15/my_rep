@@ -4,7 +4,7 @@
     my_bit_chain::my_bit_chain(){
         size_t used_lenth = 0;
         size_t full_lenth = 16;
-        unsigned char* bits = new unsigned char[2];
+	bits = nullptr;    
     }
     my_bit_chain::~my_bit_chain(){
         delete[] bits;
