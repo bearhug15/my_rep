@@ -77,3 +77,10 @@ TEST(Modifying, opposite) {
 	my_rnk r2 =!r1;	
 	EXPECT_TRUE(r1.is_complimentary(r2));
 }
+
+int main(int argc, char**argv){
+	::testing::InitGoogleTest(&argc,argv);
+	RUN_ALL_TESTS();
+	_CrtDumpMemoryLeaks(); //Будет небольшая утечка от Гугл тестов
+	return 0;
+}
