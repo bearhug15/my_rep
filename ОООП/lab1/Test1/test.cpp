@@ -6,6 +6,10 @@ TEST(Creation, creation) {
 	my_rnk r1(nucleotide::A, 10);
 	EXPECT_EQ(10, r1.capacity());
 }
+TEST(Creation, creation0) {
+	my_rnk r1(nucleotide::A, 0);
+	EXPECT_EQ(0, r1.capacity());
+}
 TEST(Creation, long_creation) {
 	my_rnk r1(nucleotide::A, 700000000);
 }
@@ -47,6 +51,7 @@ TEST(Modifying, trim) {
 	EXPECT_TRUE(r1 == r2);
 	r1.trim(7);
 	EXPECT_TRUE(r1 == r2);
+	r1.trim(-2);
 }
 TEST(Modifying, split) {
 	my_rnk r1 = nucleotide::A + nucleotide::A + nucleotide::G + nucleotide::C + nucleotide::A + nucleotide::C;
@@ -59,6 +64,7 @@ TEST(Modifying, split) {
 TEST(Modifying, replacement) {
 	my_rnk r1 = nucleotide::A + nucleotide::A + nucleotide::G + nucleotide::C + nucleotide::A + nucleotide::T;
 	my_rnk r2(nucleotide::A, 6);
+	r1=r1;
 	r2[2] = nucleotide::G;
 	r2[3] = nucleotide::C;
 	r2[5] = nucleotide::T;
