@@ -3,9 +3,10 @@
 #include "my_bit_chain.h"
 
     my_bit_chain::my_bit_chain(){
-        size_t used_lenth = 0;
-        size_t full_lenth = 16;
-	bits = nullptr;    
+        used_lenth = 0;
+        full_lenth = 0;
+        //unsigned char* bits = new unsigned char[2];
+		bits = nullptr;
     }
     my_bit_chain::~my_bit_chain(){
         delete[] bits;
@@ -24,22 +25,24 @@
     size_t my_bit_chain::max_size(){
         return full_lenth;
     }
-    void my_bit_chain::push_back(bool bit){
-        if (used_lenth == full_lenth) {
-            unsigned char *new_bits = new unsigned char[size_t(full_lenth / 8 * 1.5)];
-            for (size_t i = 0; i < full_lenth / 8; i++) {
-                new_bits[i] = bits[i];
-            }
-            full_lenth = (full_lenth / 8 * 1.5) * 8;
-            delete[] bits;
-            bits = new_bits;
-        }
-		unsigned char buff_bit = bit;
-		buff_bit = buff_bit << (7 - used_lenth % 8);
-		unsigned char buff_mask=255^(1<< (7 - used_lenth % 8));
-        bits[(used_lenth )/ 8] = (bits[(used_lenth )/ 8]&buff_mask) | buff_bit;
-        used_lenth++;
-    }
+	void my_bit_chain::push_nuc(nucleotide nuc) {
+		if (used_lenth == full_lenth) {
+			unsigned char* new_bits = new unsigned char[size_t(full_lenth / 8 * 1.5+1)];
+			for (size_t i = 0; i < full_lenth / 8; i++) {
+				new_bits[i] = bits[i];
+			}
+			full_lenth =size_t(full_lenth / 8 * 1.5+1) * 8;
+			delete[] bits;
+			bits = new_bits;
+		}
+		unsigned char bit_nuc = static_cast<unsigned char>(nuc);
+		bit_nuc = bit_nuc << (6 - used_lenth % 8);
+		unsigned char mask = 3;
+		mask =((unsigned char)255) ^ (mask << (6 - used_lenth % 8));
+		bits[(used_lenth) / 8] = (bits[(used_lenth) / 8] &mask)| bit_nuc ;
+		used_lenth += 2;
+	}
+
     my_bit_chain_buffer my_bit_chain::operator[](size_t index){
         my_bit_chain_buffer bit_buffer((bits + index / 8), index % 8);
         return bit_buffer;
@@ -104,7 +107,7 @@
 		}
 		full_lenth = another_chain.full_lenth;
 	}
-	void my_bit_chain::put_bytes(size_t last_pos, char byte){
+	void my_bit_chain::put_bytes(size_t last_pos, unsigned char byte){
 		for (size_t i = 0; i < last_pos; i++){
 			bits[i] = byte;
 		}

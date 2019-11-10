@@ -2,14 +2,13 @@
 #include "pch.h"
 #include <cstddef>
 #include "my_rnk.h"
-
     my_rnk::~my_rnk(){
-        delete this->chain;
+        delete chain;
 		chain = nullptr;
     }
     my_rnk::my_rnk(){
         lenth = 0;
-        chain = new my_bit_chain;
+		chain = new my_bit_chain{};
     }
     my_rnk::my_rnk(my_bit_chain* new_chain){
         lenth = new_chain->size()/2;
@@ -23,32 +22,9 @@
 		nuc_byte = ((((((nuc_byte + (unsigned char)nuc) << 2) + (unsigned char)nuc) << 2) + (unsigned char)nuc) << 2) + (unsigned char)nuc;
 			chain->put_bytes(amount/4, nuc_byte);
 		amount = amount % 4;
-        switch (nuc){
-            case nucleotide::A:
-                for (size_t i = 0; i<amount; i++){
-                    chain->push_back(false);
-                    chain->push_back(false);
-                };
-                break;
-            case nucleotide::G:
-                for (size_t i = 0; i<amount; i++){
-                    chain->push_back(false);
-                    chain->push_back(true);
-                };
-                break;
-            case nucleotide::C:
-                for (size_t i = 0; i<amount; i++){
-                    chain->push_back(true);
-                    chain->push_back(false);
-                };
-                break;
-            case nucleotide::T:
-                for (size_t i = 0; i<amount; i++){
-                    chain->push_back(true);
-                    chain->push_back(true);
-                };
-                break;
-        }
+		for (int i = 0; i < amount; i++) {
+			chain->push_nuc(nuc);
+		};
     }
     my_rnk::my_rnk(const my_rnk & another_rnk){
         lenth = another_rnk.capacity();
@@ -66,7 +42,7 @@
     }
     size_t my_rnk::cardinality(nucleotide nuc) const {
         size_t count = 0;
-        char got_nuc = 0;
+        unsigned char got_nuc = 0;
         for (unsigned int i = 0; i<lenth; i++){
             for (size_t j = 0; j<2; j++) {
                 got_nuc = got_nuc << 1;
@@ -78,17 +54,8 @@
         }
         return count;
     }
-
-	std::unordered_map<nucleotide, int> my_rnk::cardinality() {
-		std::unordered_map<nucleotide, int> my_map;
-		for (size_t i = 0;i <lenth;i++) {
-			my_map[(*this)[i]]++;
-		}
-		return my_map;
-	}
-
     void my_rnk::trim(size_t last_index){
-        if (last_index> lenth)return;
+		if (last_index > lenth) { throw std::out_of_range("trim out of my_rnk lenth"); }
         chain->erase(last_index * 2);
         lenth = last_index ;
     }
@@ -96,6 +63,7 @@
         if (lenth != another_rnk.capacity()){
             return false;
         }
+		for(size_t i=0;i<lenth;i++)
         for (size_t i = 0; i<lenth * 2; i++){
             if ((*chain)[i].get_bit() == another_rnk.get_bit(i)){
                 return false;
@@ -105,14 +73,18 @@
     }
     my_rnk my_rnk::split(size_t index){
 		if (index > lenth-1) {
+			throw std::out_of_range("split out of my_rnk lenth");
 			my_rnk bad_rnk;
 			return bad_rnk;
 		}
         my_bit_chain *new_chain = new my_bit_chain();
         new_chain->reserve((lenth - index) * 2);
         for (size_t i = index ; i<lenth; i++){
-            new_chain->push_back((*chain)[i * 2].get_bit());
-            new_chain->push_back((*chain)[i * 2 + 1].get_bit());
+			unsigned char bit_nuc = unsigned char((*chain)[i * 2].get_bit());
+			bit_nuc = (bit_nuc << 1) + unsigned char((*chain)[i * 2].get_next_bit());
+			new_chain->push_nuc(static_cast<nucleotide>(bit_nuc));
+            //new_chain->push_back((*chain)[i * 2].get_bit());
+           //new_chain->push_back((*chain)[i * 2 + 1].get_bit());
         }
         my_rnk new_rnk(new_chain);
         chain->erase(index * 2);
@@ -132,6 +104,12 @@
         my_rnk new_rnk(nuc,1);
         return *this + new_rnk;
     }
+	my_rnk& my_rnk::operator+=(nucleotide nuc) {
+		chain->push_nuc(nuc);
+		lenth++;
+		return *this;
+	}
+
     bool my_rnk::operator==(my_rnk& another_rnk){
         if (lenth != another_rnk.capacity()){
             return false;
@@ -198,4 +176,11 @@
 			os << rnk[i];
 		}
 		return os;
+	}
+	std::unordered_map<nucleotide, int/*, std::hash<int>*/> my_rnk::cardinality() {
+		std::unordered_map<nucleotide, int/*, std::hash<int>*/> my_map;
+		for (size_t i = 0; i < lenth; i++) {
+			my_map[(*this)[i]]+=1;
+		}
+		return my_map;
 	}

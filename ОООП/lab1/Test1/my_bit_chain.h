@@ -14,9 +14,10 @@ public:
     size_t size();
     size_t max_size();
     void push_back(bool bit);
+	void push_nuc(nucleotide nuc);
     my_bit_chain_buffer operator[](size_t index);
     const bool operator[](size_t index) const ;
-	void put_bytes(size_t last_pos, char byte);
+	void put_bytes(size_t last_pos, unsigned char byte);
     void flip();
     void erase(size_t start);
 	void copy(my_bit_chain* another_chain);

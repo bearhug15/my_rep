@@ -64,10 +64,10 @@
 		nuc = nuc | buff_nuc;
 		switch (nuc)
 		{
-		case 0 : return nucleotide::A;
-		case 1 : return nucleotide::G;
-		case 2 : return nucleotide::C;
-		case 3 : return nucleotide::T;
+		case static_cast<int>(nucleotide::A) : return nucleotide::A;
+		case static_cast<int>(nucleotide::G) : return nucleotide::G;
+		case static_cast<int>(nucleotide::C) : return nucleotide::C;
+		case static_cast<int>(nucleotide::T) : return nucleotide::T;
 		}
 	};
 	std::ostream& operator<<(std::ostream& os, my_bit_chain_buffer buff) {

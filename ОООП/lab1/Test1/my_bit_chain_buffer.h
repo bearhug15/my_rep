@@ -16,7 +16,6 @@ public:
     bool get_bit()const;
 	bool get_next_bit()const;
 	operator nucleotide();
-	//operator nucleotide();
 };
 std::ostream& operator<<(std::ostream& os, my_bit_chain_buffer buff);
 #endif //LAB_DNK_BIT_CHAIN_BUFFER_H
