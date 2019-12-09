@@ -1,0 +1,9 @@
+#pragma once
+#include "dump.h"
+#include "grep.h"
+#include "parser.h"
+#include "readfile.h"
+#include "replace.h"
+#include "writefile.h"
+#include "sort.h"
+#include "validator.h"

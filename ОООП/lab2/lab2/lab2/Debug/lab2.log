@@ -1,0 +1,4 @@
+﻿  main.cpp
+C:\Users\iarte\source\repos\lab2\lab2\main.cpp(108,23): warning C4244: =: преобразование "__int64" в "size_t", возможна потеря данных
+C:\Users\iarte\source\repos\lab2\lab2\main.cpp(193,40): warning C4101: e: неиспользованная локальная переменная
+  lab2.vcxproj -> C:\Users\iarte\source\repos\lab2\Debug\lab2.exe
