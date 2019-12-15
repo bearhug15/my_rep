@@ -14,7 +14,11 @@ void writefile::execute() {
 	catch (const std::ios_base::failure & e) {
 		throw  e;
 	}
-	for (size_t i = 0; i<(text[0][0]).size();i++) { file.write((text[0][0][i]+std::string("\n")).c_str(), (text[0][0])[i].length()+ (long)1); }
+	char n = '\n';
+	for (size_t i = 0; i<(text[0][0]).size();i++) { 
+		file.write((text[0][0][i]/*+std::string("\n")*/).c_str(), (text[0][0])[i].length()/*+ 1*/);
+		file.write(&n, 1);
+	}
 	for (size_t i = 0; i<(text[0][0]).size(); i++) { text[0][0][i].~basic_string(); }
 	delete text[0];
 	text[0] = nullptr;

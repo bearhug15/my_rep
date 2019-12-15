@@ -4,6 +4,7 @@
 
 validator::validator() {
 	comand_map = nullptr;
+	lim_creation_coms = nullptr;
 }
 
 template <typename T>
@@ -32,11 +33,28 @@ void validator::validate_con(std::string* data, std::unordered_map<size_t, std::
 }
 
 void validator::validate_comand(std::string * com) {
-	if (comand_map == nullptr)throw(std::exception(""));
-	if (comand_map->find(com[0]) == comand_map->end()) throw instruction_list_error("wrong comand name");
+	if (comand_map == nullptr)throw comand_params_error("no comand map ");
+	if (comand_map->find(com[0]) == comand_map->end()) throw instruction_list_error("wrong comand name ");
+	if (lim_creation_coms != nullptr) {
+		for (int i = 0; i < lim_creation_coms->size(); i++) {
+			if ((*lim_creation_coms)[i].first == *com) {
+				if ((*lim_creation_coms)[i].second == 0) {
+					throw uses_exceeded(com->c_str());
+				}
+				else {
+					(*lim_creation_coms)[i].second--;
+				}
+				return;
+			}
+		}
+	}
 }
 
 void validator::set_comand_map(std::unordered_map<std::string, worker*>* comand_map) {
 	this->comand_map = comand_map;
+	return;
+}
+void validator::set_lim_creation_coms(std::vector<std::pair<std::string, int>>* lim_creation_coms) {
+	this->lim_creation_coms = lim_creation_coms;
 	return;
 }

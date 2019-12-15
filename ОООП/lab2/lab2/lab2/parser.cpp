@@ -26,12 +26,16 @@ void parser::start_of_instr() {
 	this->parse_new_instruction_line();
 }
 void parser::parse_new_instruction_line() {
-	std::getline(input,data);
-	try {
-		input.exceptions(input.failbit);
-	}
-	catch (const std::ios_base::failure & e) {
-		throw instruction_list_error("incorrect end") ;
+	data = std::string("");
+	while (data.find_first_not_of(" ") == std::string::npos) {
+		std::getline(input, data);
+
+		try {
+			input.exceptions(input.failbit);
+		}
+		catch (const std::ios_base::failure & e) {
+			throw instruction_list_error("incorrect end");
+		}
 	}
 	processed_data = 0;
 }

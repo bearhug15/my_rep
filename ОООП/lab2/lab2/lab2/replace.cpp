@@ -1,4 +1,4 @@
-#pragma omce
+#pragma once
 #include "replace.h"
 
 

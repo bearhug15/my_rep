@@ -8,11 +8,12 @@
 #include<crtdbg.h>
 #include"workers.h"
 #include<unordered_map>
+#include<utility>
 void process_input(int argc, char** argv, std::pair< char, std::string>*  inpair,std::pair< char, std::string>*outpair,std::string* conveyor_file){
 	switch (argc) {
 			case 6: 
 			{
-				std::pair< char, std::string> baffpair = { ((std::string)argv[4])[1],(std::string)argv[5] };
+				std::pair< char, std::string> baffpair = { argv[4][1],std::string(argv[5]) };
 				switch (baffpair.first) {
 				case 'i':inpair->second=baffpair.second; break;
 				case 'o':outpair->second = baffpair.second; break;
@@ -21,10 +22,10 @@ void process_input(int argc, char** argv, std::pair< char, std::string>*  inpair
 			}
 			case 4: 
 			{
-				std::pair< char, std::string> baffpair = { ((std::string)argv[2])[1],(std::string)argv[3] };
+				std::pair< char, std::string> baffpair = { argv[2][1],std::string(argv[3]) };
 				switch (baffpair.first) {
-				case 'i':if (inpair->second == " ")inpair->second = baffpair.second; else { std::cout << "incorrect input"; exit(0); }  break;
-				case 'o':if (outpair->second == " ")outpair->second = baffpair.second; else { std::cout << "incorrect input"; exit(0); } break;
+				case 'i':if (inpair->second == std::string(" "))inpair->second = baffpair.second; else { std::cout << "incorrect input"; exit(0); }  break;
+				case 'o':if (outpair->second == std::string(" "))outpair->second = baffpair.second; else { std::cout << "incorrect input"; exit(0); } break;
 				default: std::cout << "incorrect input"; exit(0);
 				}
 			}
@@ -80,11 +81,11 @@ void clear_all(std::pair< char, std::string>* inpair, std::pair< char, std::stri
 int main(int argc, char** argv) {
 	_CrtMemState st1,st2,dif_st;
 	_CrtMemCheckpoint(&st1);
-	std::pair< char, std::string> inpair = {'i'," "};
-	std::pair< char, std::string> outpair = {'o'," "};
+	std::pair< char, std::string> inpair = {'i',std::string(" ")};
+	std::pair< char, std::string> outpair = {'o',std::string(" ")};
 	std::string conveyor_file;
 	process_input(argc,argv,&inpair,&outpair,&conveyor_file);
-	//conveyor_file = "in1.txt";
+	//conveyor_file = "in4.txt";
 	parser* new_pars= nullptr;
 	std::unordered_map<size_t, std::vector<std::string>> *params_map = new std::unordered_map<size_t, std::vector<std::string>>;
 	std::unordered_map<std::string, worker*>* workers_map = new std::unordered_map<std::string, worker*>();
@@ -94,7 +95,9 @@ int main(int argc, char** argv) {
 	validator my_validator{};
 	my_validator.set_comand_map(workers_map);
 	std::string conveyor;
-	
+	std::vector<std::pair<std::string, int>> lim_use_block;
+	lim_use_block.push_back(std::make_pair(std::string("sort"), 1));
+	//my_validator.set_lim_creation_coms(&lim_use_block);
 	
 	try {
 		parser* pars = new parser(conveyor_file);
@@ -107,18 +110,22 @@ int main(int argc, char** argv) {
 		while (!pars->end_of_instr()) {
 			num = pars->get_num();
 			if (params_map->find(num) != params_map->end()) throw instruction_list_error("two instructions with matching id");
-			params_map[0][num] = pars->get_params(&my_validator);
+			try {
+				params_map[0][num] = pars->get_params(&my_validator);
+			}
+			catch (uses_exceeded) {
+			}
 			pars->parse_new_instruction_line();
 		}
 
 	}
 	catch (const instruction_list_error& e) {
-		std::cout << e.what();
+		std::cout << e.so_what();
 		clear_all(&inpair, &outpair, &conveyor_file, new_pars, params_map, workers_map, text);
 		exit(0);
 	}
 	catch (const comand_params_error & e) {
-		std::cout << e.what();
+		std::cout << e.so_what();
 		clear_all(&inpair, &outpair, &conveyor_file, new_pars, params_map, workers_map, text);
 		exit(0);
 	}
@@ -170,14 +177,13 @@ int main(int argc, char** argv) {
 				if (outpair.second != " "){
 					worker* current_worker = workers_map[0]["writefile"];
 					current_worker->set_text(&text);
-					std::vector<std::string>vec = { "writefile", inpair.second };
+					std::vector<std::string>vec = { "writefile", outpair.second };
 					current_worker->set_params(&vec);
 					current_worker->execute();
-
 				}
 			}
 			catch (const conveyor_docking_error& e){
-				std::cout << e.what();
+				std::cout << e.so_what();
 				clear_all(&inpair, &outpair, &conveyor_file, new_pars, params_map, workers_map, text);
 				exit(0);
 			}
@@ -185,7 +191,7 @@ int main(int argc, char** argv) {
 			clear_all(&inpair, &outpair, &conveyor_file, new_pars, params_map, workers_map, text);
 		}
 		else{
-			std::cout << e.what();
+			std::cout << std::string(e.so_what());
 			clear_all(&inpair, &outpair, &conveyor_file, new_pars, params_map, workers_map, text);
 			exit(0);
 		}
@@ -196,7 +202,7 @@ int main(int argc, char** argv) {
 		exit(0);
 	}
 	catch (const comand_params_error & e) {
-		std::cout << e.what();
+		std::cout << e.so_what();
 		clear_all(&inpair, &outpair, &conveyor_file, new_pars, params_map, workers_map, text);
 		exit(0);
 	}
