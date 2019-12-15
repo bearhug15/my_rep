@@ -1,0 +1,9 @@
+desc
+1=readfile r1.txt
+2 = writefile w1.txt
+3= dump w1_1.txt
+4 =grep a
+5 = sort 
+ 6 =    replace a ab
+csed
+   1->5 ->3->  4 ->6->2

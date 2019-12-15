@@ -1,0 +1,5 @@
+desc
+1=writefile w3.txt
+2 = grep b
+csed
+2->1

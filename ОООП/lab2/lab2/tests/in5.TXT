@@ -1,0 +1,4 @@
+desc
+2 = readfile r5.txt
+2 = writefile w5.txt
+csed
