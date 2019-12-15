@@ -1,9 +1,0 @@
-desc
-1 = readfile r1.txt
-2 =writefile w1.txt
-3= grep a
-4=sort
-5 = replace a b
-6 = dump w1_1.txt
-csed
-1->3->6->5->4->2
