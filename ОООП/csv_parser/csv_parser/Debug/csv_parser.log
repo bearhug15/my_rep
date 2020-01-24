@@ -1,0 +1,3 @@
+﻿  csv_parser.cpp
+C:\Users\iarte\source\repos\csv_parser\csv_parser\csv_parser.cpp(235): warning C4715: csv_row<int,int,std::basic_string<char,std::char_traits<char>,std::allocator<char> > >::make_data: значение возвращается не при всех путях выполнения
+  csv_parser.vcxproj -> C:\Users\iarte\source\repos\csv_parser\Debug\csv_parser.exe
