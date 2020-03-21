@@ -1,0 +1,6 @@
+Alphabet start
+.=a
+-=b
+Alphabet end
+. - . . . - - . -   . - . -
+. . . . ---
