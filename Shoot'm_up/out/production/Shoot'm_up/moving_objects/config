@@ -1,0 +1,22 @@
+
+playerSpeed1 10
+playerR1 20
+playerFireSpeed1 10
+myBulletHeight1 10
+myBulletWidth1 10
+myBulletSpeedY1 -4
+myBulletSpeedX1 0
+myBulletDamage1 10
+enemyBulletHeight1 10
+enemyBulletWidth1 10
+enemyBulletSpeedY1 4
+enemyBulletSpeedX1 0
+enemyBulletDamage1 10
+enemyHealth1 20
+enemyR1 20
+enemySpeedY1 2
+enemySpeedX1 2
+enemyFireSpeed1 10
+playerSpeed2 6
+playerSpeed3 4
+spawnTimer1 10
