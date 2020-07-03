@@ -16,7 +16,7 @@ enemyHealth1 20
 enemyR1 20
 enemySpeedY1 2
 enemySpeedX1 2
-enemyFireSpeed1 10
+enemyFireSpeed1 20
 playerSpeed2 6
 playerSpeed3 4
-spawnTimer1 10
+spawnTimer1 20

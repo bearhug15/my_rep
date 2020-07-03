@@ -57,21 +57,10 @@ public class Main {
         //startMenu.addActionListener(new myStartActionListener(myPlayer));
         PlayerWrapper localPlayerWrapper = new PlayerWrapper();
         MainPanel panel = new MainPanel(mainController);
-        MyStartActionListaner aL= new MyStartActionListaner(localPlayerWrapper,startMenu,pauseMenu,stopMenu,scoresMenu,mainController,fieldContainer, panel);
+        ListenerPanel listenerPanel = new ListenerPanel(mainController,null);
+        MyStartActionListaner aL= new MyStartActionListaner(localPlayerWrapper,startMenu,pauseMenu,stopMenu,scoresMenu,mainController,fieldContainer, panel,listenerPanel);
         startMenu.addActionListener(aL);
-        /*startMenu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                String playername  = JOptionPane.showInputDialog("Please input a player name");
-                //myPlayer = fieldContainer.generatePlayer(playername);
-                startMenu.setEnabled(false);
-                pauseMenu.setEnabled(true);
-                stopMenu.setEnabled(true);
-                scoresMenu.setEnabled(true);
-                mainController.startGame();
 
-            }
-        });*/
 
         continueMenu.addActionListener(new ActionListener() {
             @Override
@@ -142,6 +131,7 @@ public class Main {
         mainController.setObserver(panel);
         frame.add(panel);
         frame.addKeyListener(panel);
+        //frame.addKeyListener(listenerPanel);
         frame.setVisible(true);
 
 
@@ -159,6 +149,7 @@ class MyStartActionListaner implements ActionListener {
     Controller mainController;
     FieldContainer fieldContainer;
     MainPanel panel;
+    ListenerPanel listenerPanel;
     public MyStartActionListaner(PlayerWrapper playerWrapper,
                                  JMenuItem startMenu,
                                  JMenuItem pauseMenu,
@@ -166,7 +157,8 @@ class MyStartActionListaner implements ActionListener {
                                  JMenuItem scoresMenu,
                                  Controller mainController,
                                  FieldContainer fieldContainer,
-                                 MainPanel panel){
+                                 MainPanel panel,
+                                 ListenerPanel listenerPanel){
         this.playerWrapper = playerWrapper;
         this.startMenu = startMenu;
         this.pauseMenu= pauseMenu;
@@ -175,6 +167,7 @@ class MyStartActionListaner implements ActionListener {
         this.mainController = mainController;
         this.fieldContainer = fieldContainer;
         this.panel = panel;
+        this.listenerPanel = listenerPanel;
     }
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
@@ -182,6 +175,7 @@ class MyStartActionListaner implements ActionListener {
         Player player=fieldContainer.generatePlayer(playername);
         playerWrapper.setPlayer(player);
         panel.setMyPlayer(player);
+        listenerPanel.setMyPlayer(player);
         startMenu.setEnabled(false);
         pauseMenu.setEnabled(true);
         stopMenu.setEnabled(true);
@@ -201,3 +195,56 @@ class PlayerWrapper{
     Player player;
 
 }
+class ListenerPanel implements KeyListener{
+    Player myPlayer;
+    Controller controller;
+    ListenerPanel(Controller controller,Player myPlayer){
+        this.myPlayer = myPlayer;
+        this.controller = controller;
+    }
+    public void setMyPlayer(Player myPlayer){
+        this.myPlayer = myPlayer;
+    }
+    @Override
+    public void keyTyped(KeyEvent keyEvent) {
+        /*if(keyEvent.getExtendedKeyCode() == 27){
+            //TODO open menu
+        }
+        System.out.println((int)keyEvent.getKeyChar());*/
+    }
+
+    @Override
+    public void keyPressed(KeyEvent keyEvent) {
+        if(myPlayer!=null) {
+            switch (keyEvent.getExtendedKeyCode()) {
+                case 37:
+                    controller.moveLeft(myPlayer);
+                    System.out.println("Left");
+                    //fieldContainer.movePlayer(myPlayer,0,-1);
+                    break;
+                case 38:
+                    controller.moveUp(myPlayer);
+                    System.out.println("Up");
+                    //fieldContainer.movePlayer(myPlayer,-1,0);
+                    break;
+                case 39:
+                    controller.moveRight(myPlayer);
+                    System.out.println("Right");
+                    //fieldContainer.movePlayer(myPlayer,0,1);
+                    break;
+                case 40:
+                    controller.moveDown(myPlayer);
+                    System.out.println("Down");
+                    //fieldContainer.movePlayer(myPlayer,1,0);
+                    break;
+                default:
+            }
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent keyEvent) {
+
+    }
+}
+//*/
