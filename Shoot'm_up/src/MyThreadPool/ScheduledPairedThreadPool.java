@@ -202,9 +202,9 @@ class WorkerThread extends Thread{
     }
     @Override
     public void run() {
-       /* synchronized (isWorking){
+        synchronized (isWorking){
             isWorking = true;
-        }*/
+        }
         /*while (true) {
             if(isWorking) {*/
                 super.run();
@@ -217,10 +217,10 @@ class WorkerThread extends Thread{
                     }
                 }
             }
-        }
+        }*/
         synchronized (isWorking){
             isWorking = false;
-        }*/
+        }
     }
     public boolean isWorking(){
         boolean res;
