@@ -72,11 +72,11 @@ fn main(){
 }
 
 fn find_root( start_range: (f64, f64), coefs: &(f64,f64,f64), epsilon: &f64) -> f64 {
-    println!("Range {},{}",start_range.0,start_range.1);
+   // println!("Range {},{}",start_range.0,start_range.1);
     let mut x: f64=(start_range.1+start_range.0)/2.0;
     let mut range: (f64,f64) = start_range;
     while range.1-x> *epsilon {
-        if func(coefs,&x)> *epsilon {
+        if func(coefs,&x).signum()== func(coefs,&range.1).signum() {
             range.1 = x;
         } else {
             range.0 = x;
