@@ -1,38 +1,11 @@
+#![feature(drain_filter)]
 use std::net::{UdpSocket, Ipv4Addr, Ipv6Addr, IpAddr, SocketAddr};
 use std::env;
 use std::time::Duration;
 use std::str::FromStr;
 use std::time::SystemTime;
+
 use std::collections::LinkedList;
-/*
-#[cfg(target_os = "windows")]
-extern crate ipconfig;
-
-#[cfg(not(target_os = "windows"))]
-extern crate ifaces;
-
-fn find_local_ip(iptype:IpAddr)->String{
-    let plug = String::from(" ");
-    if iptype.is_ipv4(){
-        if cfg!(target_os="windows"){
-            //let adapters = ipconfig::get_adapters().expect("Couldn't get adapters");
-            for adapter in ipconfig::get_adapters().unwrap(){
-                /*for address in adapter.ip_addresses(){
-
-                }*/
-            }
-        } else {
-
-        }
-    } else{
-        if cfg!(target_os="windows"){
-            let adapters = ipconfig::get_adapters().expect("Couldn't get adapters");
-        } else {
-
-        }
-    }
-    return plug;
-}*/
 
 fn group_check(iptype: IpAddr,socket: UdpSocket, multicast_addr: & String){
     if iptype.is_ipv4() {
@@ -51,7 +24,7 @@ fn group_check(iptype: IpAddr,socket: UdpSocket, multicast_addr: & String){
     send_addr.push_str(":40000");
     let mut last_send = SystemTime::now();
     let mut last_connection_check = last_send.clone();
-    let mut group_members: LinkedList<(SocketAddr,SystemTime)>;
+    let mut group_members: LinkedList<(SocketAddr,SystemTime)> = LinkedList::new();
     loop{
         let mut now =SystemTime::now();
         if now.duration_since(last_send).unwrap().as_millis()>100 {
@@ -59,16 +32,18 @@ fn group_check(iptype: IpAddr,socket: UdpSocket, multicast_addr: & String){
             last_send = now.clone();
         }
         if now.duration_since(last_connection_check).unwrap().as_secs_f64()>1.0{
-
+            now=SystemTime::now();
+            group_members.drain_filter(|x| x.1.duration_since(now).unwrap().as_secs_f64()>1.0);
+            last_connection_check = now;
         }
 
         let (message_size,sender_address) =socket.recv_from(&mut recv_message).unwrap();
         let mut was_detected = false;
-        for mut pair in group_members{
-            if pair.0.eq(&sender_address) {
+        for mut pair in &mut group_members{
+            if (pair).0.eq(&sender_address) {
                 was_detected = true;
                 now =SystemTime::now();
-                pair.1 = now;
+                (pair).1 = now;
             }
         }
         if !was_detected{
@@ -91,5 +66,5 @@ fn main() {
     }*/
     let socket = UdpSocket::bind("127.0.0.1:40000").expect("Couldn't bind socket");
     let args: Vec<String> = env::args().collect();
-    //group_check(if args[1].contains("."){IpAddr::V4(Ipv4Addr::new(0,0,0,0))}else{IpAddr::V6(Ipv6Addr::new(0,0,0,0,0,0,0,0))}, socket, &args[1]);
+    group_check(if args[1].contains("."){IpAddr::V4(Ipv4Addr::new(0,0,0,0))}else{IpAddr::V6(Ipv6Addr::new(0,0,0,0,0,0,0,0))}, socket, &args[1]);
 }
